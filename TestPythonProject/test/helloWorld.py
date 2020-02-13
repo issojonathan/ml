@@ -18,6 +18,15 @@ from ctypes.test.test_pickling import name
 from cgitb import text
 from collections import Counter
 from _overlapped import NULL
+from collections import OrderedDict
+import random
+import collections
+from itertools import islice
+from test.test_configparser import SortedDict
+import numpy as np
+import matplotlib.pyplot as plt
+from math import log
+from matplotlib._layoutbox import align
 
 client = pymongo.MongoClient ("mongodb+srv://issojonathan:Uy123123@jonathanisso-er8ve.mongodb.net/test?retryWrites=true&w=majority")
 db = client.get_database('colectionML')
@@ -92,6 +101,7 @@ print("llego1")
 documentos = db.documents.find()
 frecuenciaPalabras = []
 frecuenciaPalabrasXdocumento = []
+frecuenciasTotales = []
 
 unapalabra = "esto es una palabra"
 unapalabra += " esto es otra palabra"
@@ -221,6 +231,7 @@ print (list(zip(otraListaPalabras, frecuenciaPalabras)))
 
 print ("voy a imprimir dict")
 
+# otraListaPalabras.sort()
 counts = Counter(otraListaPalabras)
 
 print(counts)
@@ -241,4 +252,45 @@ print(nombreDocumentoMasPalabras)
 print("#######################################################")
 print("Se almaceno en la DB la frecuencia de las palabras por documento")
 print("prueba imprimir frecuencia")
+print(counts)
+print(counts)
+print(counts)
+print(counts)
 
+sorted_dict = OrderedDict(sorted(counts.items(), key=lambda kv : kv[1], reverse=True))
+for palabras in sorted_dict: 
+    print (palabras, sorted_dict[palabras])
+
+print (sorted_dict)
+print (sorted_dict)
+
+if db.topwords.find_one({}):
+    db.topwords.delete_one({})
+    
+    db.topwords.insert_one(counts)
+else:
+    db.topwords.insert_one(counts)
+    
+if db.top10words.find_one({}):
+    db.top10words.delete_one({})
+    
+    db.top10words.insert_one(sorted_dict)
+else:
+    db.top10words.insert_one(sorted_dict)
+    
+# ##LOS PRIMEROS 10 ELEMENTOS
+    
+# print(counts)
+    
+# VOY A IMPRIMIRLA ORDENADA
+
+print("LAS 10 PALABRAS CON MAYOR FRECUENCIA EN TODA LA COLECCION, SON:")
+
+print(db.top10words.find_one({}))
+print(db.top10words.find_one({}))
+print(db.top10words.find_one({}))
+
+plt.bar(range(len(sorted_dict)), [val[1] for val in sorted_dict], align="center")
+
+plt.xticks(range(len(sorted_dict)), [val[1] for val in sorted_dict])
+plt.show()                                 
