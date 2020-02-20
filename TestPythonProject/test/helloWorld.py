@@ -147,8 +147,6 @@ for file in os.listdir("C:\\Users\\Hsbc\\Desktop\\coleccion_2020"):
             numero = numero + 1
         
 ###  FIN CARGA  ###
-print ("FIN DE CARGA DE ARCHIVOS")
-# print("Fin de carga")
 
 """INICIO DE CONSULTAS PARA CHALLENGE"""
 
@@ -255,11 +253,7 @@ for x in db.documents.find({}, no_cursor_timeout=True):
             maximoCantidadPalabrasTemp = frecuenciaPalabrasXdocumento.count(j)
             nombreDocumentoMasFrecuenciaPalabras = documentoConMasPalabras
     db.documents.find({}).close()
-    
-print ("llegue")
-print(cantidadTextosProcesados)
-    
-print("pase el close")
+
 otraListaPalabras = otrasPalabras.split()
 
 contador = 0
@@ -272,9 +266,9 @@ for o in otraListaPalabras:
     print(len(otraListaPalabras))
     print(contador)
 """
-print("estoy contando palabras")
+print("CANTIDAD DE PALABRAS TOTALES:")
+print(len.otraListaPalabras)
 counts = Counter(otraListaPalabras)
-print("llegue a contar palabras")
 
 ####################################################################
 # IMPRIMO LA SALIDA DE LA CONSOLA  PARA EL CHALLENGE
