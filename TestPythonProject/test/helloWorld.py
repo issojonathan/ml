@@ -27,81 +27,145 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import log
 from matplotlib._layoutbox import align
+from numpy.ma.core import sort
+from test.test_typing import Label
+import re
+from distutils.command.clean import clean
 
 client = pymongo.MongoClient ("mongodb+srv://issojonathan:Uy123123@jonathanisso-er8ve.mongodb.net/test?retryWrites=true&w=majority")
 db = client.get_database('colectionML')
 
-"""print(client.list_database_names())"""
 records = db.documents
 records.find()
 collection_taxonomy = db['collection']
 db = client.colectionML
 
-"""db.documents.insert_one({"name": "My first post", "text": "This is the body of my first blog post", "id": 2})"""
-"""print('hello World4')"""
-"""db.documents.insert_one({"name": "pablito", "text": "prueba pablo", "id": 3})"""
-"""print('hello World5')"""
-# files = db.files
-# f = open('C:\\Users\\Hsbc\\Desktop\\coleccion_2020\\320-8.txt')
-# text = f.read()
-"""doc = {
-    "name":"320-8", "text":text
-    }
-"""
-"""db.documents.insert_one(doc)"""
-
-###  INICIO DE CARGA DE DOCUMENTOS  ###
 numero = 0
-for file in os.listdir("C:\\Users\\Hsbc\\Desktop\\coleccion_2021"):
+for file in os.listdir("C:\\Users\\Hsbc\\Desktop\\coleccion_2020"):
     if file.endswith(".txt"):
-        # print(os.path.join("C:\\Users\\Hsbc\\Desktop\\coleccion_2021", file))
-        pathArchivo = (os.path.join("C:\\Users\\Hsbc\\Desktop\\coleccion_2021", file))
-        print(pathArchivo)
+        
+        pathArchivo = (os.path.join("C:\\Users\\Hsbc\\Desktop\\coleccion_2020", file))
         a = open(pathArchivo, encoding="utf-8-sig")
-        contenidoArchivo = a.read()
-        # print("llego")
+        contenidoArchivo = a.read().lower()
+        contenidoArchivo = re.sub('\W+', ' ', contenidoArchivo)
+        contenidoArchivo = re.sub(r'[0-9]+', ' ', contenidoArchivo)
+        contenidoArchivo = re.sub('_', ' ', contenidoArchivo)
+        contenidoArchivo = re.sub(' a ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' a ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' al ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' asi ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' con ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' cual ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' cuales ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' cuan ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' de ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' del ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' el ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' ella ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' ellos ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' ellas ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' en ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' era ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' es ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' esta ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' estas ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' estan ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' etc ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' fue ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' ha ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' la ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' los ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' ni ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' no ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' nos ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' otra ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' otros ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' otro ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' para ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' pero ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' por ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' porque ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' que ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' si ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' sr ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' sra ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' sres ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' sta ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' tan ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' tu ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' tus ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' y ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' se', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' un ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' su ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' le ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' me ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' las ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' mas ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' lo ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' una ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' mi ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' yo ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' sin ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' como ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' \xE1 ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' dos ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' este ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' sus ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' muy ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' \xe9l ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' este ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' qu\xe9 ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' todo ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' bien ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' todos ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' eh ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' he ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' r ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' cuando ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' ya ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' sobre ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' m\xE1s ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' habia ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' habia ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' o ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' \xf3n ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' \xf3 ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' hay ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' son ', ' ' , contenidoArchivo)
+        contenidoArchivo = re.sub(' dijo ', ' ' , contenidoArchivo)
+        
         archivo = {"name":file, "text":contenidoArchivo}
         
         # CAMBIOS PARA ACTUALIZAR DOCUMENTOS
         
         if db.documents.find_one({"name":file}):
-            print (db.documents.find({"name":file}))
             db.documents.delete_one({})
-            print("BORRADO!!!!")
             db.documents.insert_one(archivo)
         else:
             db.documents.insert_one(archivo)
-            print(numero)
-            print("lo agrego")
             numero = numero + 1
-            
-            # db.documents.update(archivo)
-        # #ANTES DE TOCAR NADA ESTABA SOLO ESTO## 
-        """db.documents.insert_one(archivo)
-        print(numero)
-        numero = numero + 1"""
-        ########################################
         
 ###  FIN CARGA  ###
-print("Fin de carga")
+print ("FIN DE CARGA DE ARCHIVOS")
+# print("Fin de carga")
 
 """INICIO DE CONSULTAS PARA CHALLENGE"""
 
 """1-CANTIDAD DE DOCUMENTOS"""
 """Se parsea la cantidad de documentos a string ya que la funcion PRINT no permite concatener un string con un int"""
-print("La cantidad de documentos cargados es de: " + str(db.documents.estimated_document_count()))
 
 """2-CANTIDAD DE PALABRAS DIFERENTES EN LA COLECCION"""
 """https://programminghistorian.org/es/lecciones/contar-frecuencias"""
-
-print("llego1")
 """ACA TRAIGO TODO LO DE LA TABLA DOCUMENTOS"""
-"""documentos = db.documents.find({})"""
 
 documentos = db.documents.find()
 frecuenciaPalabras = []
+np.asarray(frecuenciaPalabras)
 frecuenciaPalabrasXdocumento = []
+np.asarray(frecuenciaPalabrasXdocumento)
 frecuenciasTotales = []
+np.asarray(frecuenciasTotales)
 
 unapalabra = "esto es una palabra"
 unapalabra += " esto es otra palabra"
@@ -112,7 +176,6 @@ for w in unaListaPalabra:
     frecuenciaPalabras.append(unaListaPalabra.count(w))
 
 otrasPalabras = ""
-print("Cree la variable otras palabras")
 
 PalabrasXdocumento = ""
 documentoConMasPalabras = ""
@@ -123,22 +186,20 @@ maximoCantidadPalabrasTemp = 0
 contadorPalabras = 0
 contadorPalabrasTemp = 0
 listaTempPalabrasPorDocumento = []
+np.asarray(listaTempPalabrasPorDocumento)
 
 ### ARRANCO A PROCESAR LOS DOCUMENTOS ###
-# for x in db.documents.find({}, {"_id":0}):
-for x in db.documents.find({}):
-    # Imprimo el texto entero del documento posicion "X"
-    """print(x.get("text"))"""
 
+for x in db.documents.find({}, no_cursor_timeout=True):
     # Me traigo todo lo que es el indice TEXT del documento posicion "X
     otrasPalabras += (x.get("text"))
     otrasPalabras += " "
-    print("estoy guardandome los textos en una lista")
+    # print("estoy guardandome los textos en una lista")
     
     # Incremento en 1 la cantidad de textos procesados para actualizar el contador
     cantidadTextosProcesados += 1
     # Imprimo cantidad de documentos procesados
-    print(cantidadTextosProcesados)
+    # print(cantidadTextosProcesados)
     
     # Me traigo el nombre del documento de la posicion "X"
     documentoConMasPalabras = (x.get("name"))
@@ -148,15 +209,13 @@ for x in db.documents.find({}):
     
     # A todas las palabras del texto de la posicion "X" las corto y las agrego a una lista
     # llamada listaPalabrasXdocumentos
-    listaPalabrasXdocumento = PalabrasXdocumento.split()
+    listaPalabrasXdocumento = (PalabrasXdocumento.split())
     
     # ##ACA ANTES DE ROMPER
     ##ACA TENGO QUE HACER LA CARGA EN LA BASE!!! 
     # YA TENGO LAS PALABRAS GUARDADAS, TENGO QUE RECORRER LA TABLA  Y CARGARLAS
-    # tablaFrecuenciaPalabrasXdocumento = (list(zip(listaPalabrasXdocumento, frecuenciaPalabrasXdocumento)))
-    # print("solo imprimir una vez")
     tablaFrecuenciaPalabrasXdocumento = Counter(listaPalabrasXdocumento)
-    print(tablaFrecuenciaPalabrasXdocumento)
+    # print(tablaFrecuenciaPalabrasXdocumento)
     nombreDocumentoFrecuencia = (x.get("name"))
     frecuencias = {"name":nombreDocumentoFrecuencia, "table":tablaFrecuenciaPalabrasXdocumento}
     
@@ -166,23 +225,15 @@ for x in db.documents.find({}):
     valorTable = (x.get("table"))
      
     nuevoValorTable = {"$set":tablaFrecuenciaPalabrasXdocumento}
-    
-    # ANDA if db.frequence.find_one({"name":file}):
-    if db.frequence.find_one({"name":x.get("name")}):
-        # print("ESTO TENGO GUARDADO EN LA BASE")
-        # print(x.get("name"))
+
+    if db.frequence.find_one({"name":x.get("name")}, no_cursor_timeout=True):
+
         db.frequence.delete_one({"name":x.get("name")})
-        print("BORRADO!!!!")
         db.frequence.insert_one(frecuencias)
         
     else:
-        print("voy a agregar la frecuencia")
+
         db.frequence.insert_one(frecuencias)
-        print("agrego la frecuencia")
-    
-    """
-    db.frequence.insert_one(frecuencias)
-    """
     
     countsPalabras = Counter(listaPalabrasXdocumento)
     
@@ -203,66 +254,39 @@ for x in db.documents.find({}):
         if frecuenciaPalabrasXdocumento.count(j) >= maximoCantidadPalabrasTemp:
             maximoCantidadPalabrasTemp = frecuenciaPalabrasXdocumento.count(j)
             nombreDocumentoMasFrecuenciaPalabras = documentoConMasPalabras
-        
-    # print("ESTE ES EL DOCUMENTO CON MAS PALABRAS -- TEST")
-    # print(documentoConMasPalabras)
-    # print("CON UNA FRECUENCIA DE PALABRAS: ") 
-    # print(frecuenciaPalabrasXdocumento)
+    db.documents.find({}).close()
     
+print ("llegue")
+print(cantidadTextosProcesados)
+    
+print("pase el close")
 otraListaPalabras = otrasPalabras.split()
 
+contador = 0
+
+"""
 for o in otraListaPalabras:
- 
+    contador += 1
+    # estoy agregarndo palabras a frecuencias
     frecuenciaPalabras.append(otraListaPalabras.count(o))
-    # print("estoy agregarndo palabras a frecuencias")
-
-print (otraListaPalabras)
-print (otraListaPalabras)
-print (otraListaPalabras)
-print("FRECUENCIAS POR PALABRAS")
-print (frecuenciaPalabras)
-print (frecuenciaPalabras)
-print (frecuenciaPalabras)
-# Aca imprimo la frecuencia por palabra
-print (list(zip(otraListaPalabras, frecuenciaPalabras)))
-
-# Dada una lista de palabras, devuelve un diccionario de
-# pares de palabra-frecuencia.
-
-print ("voy a imprimir dict")
-
-# otraListaPalabras.sort()
+    print(len(otraListaPalabras))
+    print(contador)
+"""
+print("estoy contando palabras")
 counts = Counter(otraListaPalabras)
-
-print(counts)
+print("llegue a contar palabras")
 
 ####################################################################
 # IMPRIMO LA SALIDA DE LA CONSOLA  PARA EL CHALLENGE
-print("#######################################################")
-print("#######################################################")
-print("CANTIDAD DE PALABRAS DISTINTAS EN TODA LA COLECCION")
+print("CANTIDAD DE PALABRAS DISTINTAS EN TODA LA COLECCION:")
 print(len(counts))
-
-print("CANTIDAD DE DOCUMENTOS PROCESADOS")
+print("CANTIDAD DE DOCUMENTOS PROCESADOS:")
 print(cantidadTextosProcesados)
-# print("EL DOCUMENTO CON MAS FRECUENCIA DE UNA MISMA PALABRA ES:")
-# print(nombreDocumentoMasFrecuenciaPalabras)
 print("EL DOCUMENTO CON MAS PALABRAS ES:")
 print(nombreDocumentoMasPalabras)
-print("#######################################################")
-print("Se almaceno en la DB la frecuencia de las palabras por documento")
-print("prueba imprimir frecuencia")
-print(counts)
-print(counts)
-print(counts)
-print(counts)
 
-sorted_dict = OrderedDict(sorted(counts.items(), key=lambda kv : kv[1], reverse=True))
-for palabras in sorted_dict: 
-    print (palabras, sorted_dict[palabras])
-
-print (sorted_dict)
-print (sorted_dict)
+sorted_dict_top10 = counts.most_common(10)
+sorted_dict_insert = OrderedDict(sorted(counts.items(), key=lambda kv : kv[1], reverse=True)[:10])
 
 if db.topwords.find_one({}):
     db.topwords.delete_one({})
@@ -274,23 +298,23 @@ else:
 if db.top10words.find_one({}):
     db.top10words.delete_one({})
     
-    db.top10words.insert_one(sorted_dict)
+    db.top10words.insert_one(sorted_dict_insert)
 else:
-    db.top10words.insert_one(sorted_dict)
-    
-# ##LOS PRIMEROS 10 ELEMENTOS
-    
-# print(counts)
-    
-# VOY A IMPRIMIRLA ORDENADA
+    db.top10words.insert_one(sorted_dict_insert)
 
-print("LAS 10 PALABRAS CON MAYOR FRECUENCIA EN TODA LA COLECCION, SON:")
+valoresGrafica = np.array(sorted_dict_top10)
+palabrasGrafica = valoresGrafica[:, 0]
+frecuenciaGrafica = valoresGrafica[:, 1]
 
-print(db.top10words.find_one({}))
-print(db.top10words.find_one({}))
-print(db.top10words.find_one({}))
+frecuenciaGraficaInt = list(map(int, frecuenciaGrafica))
 
-plt.bar(range(len(sorted_dict)), [val[1] for val in sorted_dict], align="center")
+x_pos = np.arange(len(palabrasGrafica))
+arrayEjemplo = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-plt.xticks(range(len(sorted_dict)), [val[1] for val in sorted_dict])
+plt.figure(figsize=(12, 6))
+
+plt.xticks(x_pos, palabrasGrafica)
+plt.xticks(rotation=70)
+plt.bar(x_pos, frecuenciaGraficaInt, align='center', color='green', bottom=0)
+
 plt.show()                                 
