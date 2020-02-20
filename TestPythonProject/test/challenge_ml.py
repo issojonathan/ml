@@ -267,7 +267,7 @@ for o in otraListaPalabras:
     print(contador)
 """
 print("CANTIDAD DE PALABRAS TOTALES:")
-print(len.otraListaPalabras)
+print(len(otraListaPalabras))
 counts = Counter(otraListaPalabras)
 
 ####################################################################
