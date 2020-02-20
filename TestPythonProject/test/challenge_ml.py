@@ -3,6 +3,7 @@ Created on 4 feb. 2020
 
 @author: Jonathan Isso Zuich
 '''
+# Importo las librerias necesarias
 import pymongo
 from pymongo.mongo_client import MongoClient
 from pymongo import MongoClient
@@ -32,7 +33,9 @@ from test.test_typing import Label
 import re
 from distutils.command.clean import clean
 
+# Conectividad con MongoDB Atlas
 client = pymongo.MongoClient ("mongodb+srv://issojonathan:Uy123123@jonathanisso-er8ve.mongodb.net/test?retryWrites=true&w=majority")
+# Me conecto a la coleccion
 db = client.get_database('colectionML')
 
 records = db.documents
@@ -41,12 +44,17 @@ collection_taxonomy = db['collection']
 db = client.colectionML
 
 numero = 0
+# recorro el directorio donde se encuentra el challenge
 for file in os.listdir("C:\\Users\\Hsbc\\Desktop\\coleccion_2020"):
+    # Tomo todos los archivos con extension txt que se encuentren en el directorio
     if file.endswith(".txt"):
         
         pathArchivo = (os.path.join("C:\\Users\\Hsbc\\Desktop\\coleccion_2020", file))
+        # encode de lenguaje
         a = open(pathArchivo, encoding="utf-8-sig")
+        # paso todo a minuscula
         contenidoArchivo = a.read().lower()
+        # elimino caracteres especiales y palabras vacias del string
         contenidoArchivo = re.sub('\W+', ' ', contenidoArchivo)
         contenidoArchivo = re.sub(r'[0-9]+', ' ', contenidoArchivo)
         contenidoArchivo = re.sub('_', ' ', contenidoArchivo)
@@ -135,10 +143,12 @@ for file in os.listdir("C:\\Users\\Hsbc\\Desktop\\coleccion_2020"):
         contenidoArchivo = re.sub(' son ', ' ' , contenidoArchivo)
         contenidoArchivo = re.sub(' dijo ', ' ' , contenidoArchivo)
         
+        # me creo una matriz de dos elementos para ser cargado con la posterior consulta
         archivo = {"name":file, "text":contenidoArchivo}
         
         # CAMBIOS PARA ACTUALIZAR DOCUMENTOS
-        
+        # Pregunto si el documento ya existe en la base, si existe, lo borro y lo cargo nuevamente
+        # Si el documento no existe, lo cargo e incremento el numero en 1
         if db.documents.find_one({"name":file}):
             db.documents.delete_one({})
             db.documents.insert_one(archivo)
@@ -150,12 +160,11 @@ for file in os.listdir("C:\\Users\\Hsbc\\Desktop\\coleccion_2020"):
 
 """INICIO DE CONSULTAS PARA CHALLENGE"""
 
-"""1-CANTIDAD DE DOCUMENTOS"""
-"""Se parsea la cantidad de documentos a string ya que la funcion PRINT no permite concatener un string con un int"""
-
-"""2-CANTIDAD DE PALABRAS DIFERENTES EN LA COLECCION"""
-"""https://programminghistorian.org/es/lecciones/contar-frecuencias"""
-"""ACA TRAIGO TODO LO DE LA TABLA DOCUMENTOS"""
+"""1-CANTIDAD DE DOCUMENTOS
+Se parsea la cantidad de documentos a string ya que la funcion PRINT no permite concatener un string con un int
+2-CANTIDAD DE PALABRAS DIFERENTES EN LA COLECCION
+https://programminghistorian.org/es/lecciones/contar-frecuencias"""
+# ACA TRAIGO TODO LO DE LA TABLA DOCUMENTOS
 
 documentos = db.documents.find()
 frecuenciaPalabras = []
@@ -209,7 +218,6 @@ for x in db.documents.find({}, no_cursor_timeout=True):
     # llamada listaPalabrasXdocumentos
     listaPalabrasXdocumento = (PalabrasXdocumento.split())
     
-    # ##ACA ANTES DE ROMPER
     ##ACA TENGO QUE HACER LA CARGA EN LA BASE!!! 
     # YA TENGO LAS PALABRAS GUARDADAS, TENGO QUE RECORRER LA TABLA  Y CARGARLAS
     tablaFrecuenciaPalabrasXdocumento = Counter(listaPalabrasXdocumento)
@@ -218,12 +226,12 @@ for x in db.documents.find({}, no_cursor_timeout=True):
     frecuencias = {"name":nombreDocumentoFrecuencia, "table":tablaFrecuenciaPalabrasXdocumento}
     
     # ACA VAMOS A HACER UN IF PARA VER SI YA ESTA LA FRECUENCIA EN LA TABLA, O ESTA VACIA
-    # ASI ESTABA ANTES
     
     valorTable = (x.get("table"))
      
     nuevoValorTable = {"$set":tablaFrecuenciaPalabrasXdocumento}
 
+    # no_cursor_timeout=true, se define porque el puntero se perdia luego de cargar mas de 101 elementos en la base
     if db.frequence.find_one({"name":x.get("name")}, no_cursor_timeout=True):
 
         db.frequence.delete_one({"name":x.get("name")})
@@ -258,30 +266,32 @@ otraListaPalabras = otrasPalabras.split()
 
 contador = 0
 
-"""
-for o in otraListaPalabras:
-    contador += 1
-    # estoy agregarndo palabras a frecuencias
-    frecuenciaPalabras.append(otraListaPalabras.count(o))
-    print(len(otraListaPalabras))
-    print(contador)
-"""
-print("CANTIDAD DE PALABRAS TOTALES:")
-print(len(otraListaPalabras))
-counts = Counter(otraListaPalabras)
+# Imprimo la cantidad de palabas TOTALES de todos los documentos (no lo solicita el challenge)
+# print(len(otraListaPalabras))
 
 ####################################################################
 # IMPRIMO LA SALIDA DE LA CONSOLA  PARA EL CHALLENGE
+# Cargo en la varable counts un, la cantidad de palabras distintas de la lista "otraListaPalabras"
+
+counts = Counter(otraListaPalabras)
 print("CANTIDAD DE PALABRAS DISTINTAS EN TODA LA COLECCION:")
 print(len(counts))
+
+# Imprimo la cantidad de textos procesados que se carga en la funciona anterior al entrar en el for anterior
 print("CANTIDAD DE DOCUMENTOS PROCESADOS:")
 print(cantidadTextosProcesados)
+
+# En la funcion anterior, tenemos un IF que se va quedando con el ducumento que contiene mas palabras
 print("EL DOCUMENTO CON MAS PALABRAS ES:")
 print(nombreDocumentoMasPalabras)
 
+# De todas las palabras (counts) me traigo las primeras 10 y lo guardo en sorted_dict_top10
+# Ordeno la lista con la funcion orderedDict y las traigo de mayor a menor
 sorted_dict_top10 = counts.most_common(10)
 sorted_dict_insert = OrderedDict(sorted(counts.items(), key=lambda kv : kv[1], reverse=True)[:10])
 
+# Agrego las palabras a la tabla topwords (no es necesario para el challenge)
+# Si ya esta lo elimino y sino lo cargo
 if db.topwords.find_one({}):
     db.topwords.delete_one({})
     
@@ -289,6 +299,8 @@ if db.topwords.find_one({}):
 else:
     db.topwords.insert_one(counts)
     
+# Agrego a la tabla top10words, donde luego voy a consultar para el grafico
+# Si ya esta lo elimino sino lo agrego (agrego sorted_dict_insert)
 if db.top10words.find_one({}):
     db.top10words.delete_one({})
     
@@ -296,19 +308,29 @@ if db.top10words.find_one({}):
 else:
     db.top10words.insert_one(sorted_dict_insert)
 
+# COMIENZO LA LOGICA PARA ARMAR EL GRAFICO
+# Me traigo de la posicion 0 las palabras para graficar
+# Me traigo de la posicion 1 las frecuencias de las palabras para graficar
+# Utilizo NP Array en vez de listas por un tema de performance
 valoresGrafica = np.array(sorted_dict_top10)
 palabrasGrafica = valoresGrafica[:, 0]
 frecuenciaGrafica = valoresGrafica[:, 1]
 
+# Hago un cast de la frecuencia, que era tomada con string a int, sino no sabe el valor mas alto
 frecuenciaGraficaInt = list(map(int, frecuenciaGrafica))
 
+# Defino el eje X con el largo de palabras (10)
 x_pos = np.arange(len(palabrasGrafica))
 arrayEjemplo = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
+# Tamaño del grafico
 plt.figure(figsize=(12, 6))
 
+# Eje de las x del grafico
 plt.xticks(x_pos, palabrasGrafica)
+# roto las palabras porque sino queda mal visualmente
 plt.xticks(rotation=70)
+# cambio alguna parametria del grafico, color, alineacion, etc
 plt.bar(x_pos, frecuenciaGraficaInt, align='center', color='green', bottom=0)
-
+# Imprimo el grafico con la libreria PLT importada anteriormente
 plt.show()                                 
